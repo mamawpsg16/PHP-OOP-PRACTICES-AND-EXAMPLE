@@ -1,4 +1,5 @@
 <?php 
+use App\OpenClosedPrincipleSolid\ExportFormat\Pdf;
 // require './App/PaymentGateway/Paddle/CustomerProfile.php';
 // require './App/PaymentGateway/Paddle/Transaction.php';
 // require './App/PaymentGateway/Stripe/Transaction.php';
@@ -47,6 +48,10 @@ use App\ErrorHandling\Invoice as ErrorHandling;
 use App\Controllers\Exercises\TransactionController;
 use App\PaymentGateway\Paddle\Transaction as PaddleTransaction;
 use App\PaymentGateway\Stripe\Transaction as StripeTransaction;
+use App\OpenClosedPrincipleSolid\Shape\AreaCalculator;
+use App\OpenClosedPrincipleSolid\PaymentMethod\PaymentService;
+use App\OpenClosedPrincipleSolid\ExportFormat;
+use App\DependencyInversionPrincipleSolid as DependencyInversion;
     // $allinone = new \App\Traits\AllInOneCoffeeMaker;
     // $allinone->setMilkType('all-in-one-milk');
     // echo $allinone->makeLatte();
@@ -56,6 +61,14 @@ use App\PaymentGateway\Stripe\Transaction as StripeTransaction;
     $container = new Container();
     $router = new \App\SuperGlobal\Router\Route($container);
 
+    $calculator = (new AreaCalculator())->calculateArea([ new \App\OpenClosedPrincipleSolid\Shape\Rectangle(10,20), new \App\OpenClosedPrincipleSolid\Shape\Circle(20)]);
+    $payment_gateway = (new PaymentService)->pay(new \App\OpenClosedPrincipleSolid\PaymentMethod\CashOnDelivery());
+    $export_format = (new ExportFormat\SalesReport)->between('2023-06-26','2023-06-27')->export(new ExportFormat\Pdf);
+    $payment_proccess = (new DependencyInversion\PaymentProcess(new DependencyInversion\Stripe()))->pay();
+    print($export_format).'<br>';
+    print($calculator).'<br>';
+    print($payment_gateway).'<br>';
+    print($payment_proccess).' PAYMENT PROCCESS'.'<br>';
     // $generator = new GeneratorController;
     // $generator->index();
     $router->registerRouteWithAttribute([
@@ -63,7 +76,8 @@ use App\PaymentGateway\Stripe\Transaction as StripeTransaction;
         InvoiceController::class
     ]);
 
-    var_dump($router->routes());    
+
+    // var_dump($router->routes());    
     // $router->get('/', [HomeController::class,'index'])
     // ->get('/invoices', [InvoiceController::class,'index'])
     // ->get('/invoices/create', [InvoiceController::class,'create'])
